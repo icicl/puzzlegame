@@ -1,6 +1,7 @@
 package sickomode;
 
 import java.awt.BorderLayout;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -80,8 +81,8 @@ public class board2 extends JFrame{
 		add(d, BorderLayout.CENTER);
 		reset = new JButton("New Game");
 		clear = new JButton("Clear Marks");
-		add(reset, BorderLayout.NORTH);
-		add(clear, BorderLayout.SOUTH);
+		//add(reset, BorderLayout.NORTH);
+		//add(clear, BorderLayout.SOUTH);
 
 		reset.addActionListener(new Actions(this));
 		clear.addActionListener(new Actions(this));
@@ -93,7 +94,6 @@ public class board2 extends JFrame{
 	
 
 	}
-	
 	
 	public void reset() {
 		stars = new boolean[size][size];
@@ -137,6 +137,10 @@ public class board2 extends JFrame{
 		q[x][y].flag();
 		if (won()) win();
 	}
+	public void mark(int x,int y){
+		q[x][y].mark();
+		q[x][y].unflag();
+	}
 	public int getSize_(){
 		return size;
 	}
@@ -147,6 +151,16 @@ public class board2 extends JFrame{
 	}
 	public void cols_(){
 		for (int i:cols)
+		System.out.print(i);
+		System.out.println();
+	}
+	public void rows__(){
+		for (int i:row2)
+		System.out.print(i);
+		System.out.println();
+	}
+	public void cols__(){
+		for (int i:col2)
 		System.out.print(i);
 		System.out.println();
 	}
@@ -183,14 +197,51 @@ public class board2 extends JFrame{
 	public boolean[][] getStars(){
 		return stars;
 	}
+	private int[] col2;
+	private int[] row2;
+	private int temp;
 	public boolean won() {
-		for (square[] ss:q) {
+	//	col2=new int[size];row2=new int[size];
+		for (int i = 0;i<size;i++){
+			temp=0;
+			for (square s:q[i]) temp+=s.isFlagged() ? 1 : 0;//row2[i] += s.isbad() ? 1 : 0;
+			if (temp!=rows[i]){
+				System.out.println(temp+" "+rows[i]+" "+i);
+				return false;
+			}
+		}
+		for (int i = 0;i<size;i++){
+			temp=0;
+			for (square s[]:q) temp+=s[i].isFlagged() ? 1 : 0;//col2[i] += s[i].isbad() ? 1 : 0;
+					if(temp!=cols[i]){
+						System.out.println(temp+"-"+cols[i]+" "+i);
+						return false;
+					}
+		}
+		System.out.println("ok");
+	//	rows__();
+		//cols__();
+		//cols_();
+	//	System.out.println((Arrays.equals(cols,col2)));
+	//	if (!(Arrays.equals(cols,col2)&&Arrays.equals(rows,row2))){
+	//		return false;
+		//}
+		for (int i =0;i<size;i++){
+			for (int j=0;j<size;j++){
+				if (q[i][j].isFlagged() && !stars_[i][j]){
+					System.out.println(i+j);
+					return false;
+				}
+			}
+		}
+		return true;
+/*		for (square[] ss:q) {
 			for (square s:ss) {
 				if (s.isbad() != s.isFlagged()) return false;
 			}
 		}
 		System.out.println("won");
-		return true;
+		return true;*/
 	}
 	public void win() {
 		JOptionPane.showMessageDialog(null, "Congratulations! You won!");

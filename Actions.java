@@ -38,10 +38,10 @@ public class Actions implements ActionListener, MouseListener
 
 		if (e.getButton() == 3)
 		{
-			int x = e.getX() / 20;
-			int y = e.getY() / 20;
+			int x = e.getX() / 20 - 1;
+			int y = e.getY() / 20 - 1;
 
-//			b.mark(x, y);
+			b.mark(x, y);
 		}
 
 		b.refresh();

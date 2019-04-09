@@ -122,6 +122,9 @@ public class draw extends JPanel{
 			g.drawLine(i * 20 + 13, j * 20 + 11, i * 20 + 13, j * 20 + 15);	//6
 			g.drawLine(i * 20 + 8, j * 20 + 16, i * 20 + 12, j * 20 + 16);	//7
 		}
+		else{
+			System.out.println("BIG OOF");
+		}
 	
 
 	}
@@ -144,6 +147,12 @@ public class draw extends JPanel{
 					{
 	
 						g.setColor(Color.YELLOW);
+						g.fillRect((i+1) * 20, (j+1) * 20, (i+1) * 20 + 20, (j+1) * 20 + 20);
+					}
+					else if (current.isMarked())
+					{
+	
+						g.setColor(Color.RED);
 						g.fillRect((i+1) * 20, (j+1) * 20, (i+1) * 20 + 20, (j+1) * 20 + 20);
 					}
 					else
