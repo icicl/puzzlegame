@@ -16,26 +16,28 @@ public class draw extends JPanel{
 	private board2 b;
 	private int[] rows;
 	private int[] cols;
-	public int size;
+	private int size;
+	private boolean[][] stars;
 	public draw(board2 b_)
 	{
 		b = b_;
 		sq = b_.get();
 		rows = b_.getRows();
 		cols = b_.getCols();
-		size = b_.getSize();
-//		addMouseListener(new Actions(mine));
+		size = b_.getSize_();
+		stars = b_.getStars();
+		addMouseListener(new Actions(b));
 
-		setPreferredSize(new Dimension(b_.getSize() * 20 +20, b_.getSize() * 20+20));
+		setPreferredSize(new Dimension(b_.getSize_() * 20 +20, b_.getSize_() * 20+20));
 	}
-	public void paint(Graphics g){
+	public void paintComponent(Graphics g){
 		paintHeaders(g);
-		paintComponent(g);
+		paintComponent_(g);
 	}
 	private void paintHeaders(Graphics g){
 		for (int i=0;i<size;i++){
-			paintNum(g,0,1+i,rows[i]);
-			paintNum(g,1+i,0,cols[i]);
+			paintNum(g,0,1+i,cols[i]);
+			paintNum(g,1+i,0,rows[i]);
 		}
 	}
 	private void paintNum(Graphics g,int i,int j,int num){
@@ -123,47 +125,44 @@ public class draw extends JPanel{
 	
 
 	}
-	public void paintComponent(Graphics g)
+	public void paintComponent_(Graphics g)
 	{
 		
 
-		for (int i = 0; i < b.getSize(); i++)
+		for (int i = 0; i < b.getSize_(); i++)
 		{
-			
-			g.setColor(Color.BLACK);
-			
-			g.drawLine((i+1) * 20, 0, (i+1) * 20, b.getSize() * 20 + 20);
-			g.drawLine(0,(i+1) * 20, b.getSize() * 20 + 20, (i+1) * 20);
 
-			for (int j = 0; j < b.getSize(); j++)
+			for (int j = 0; j < b.getSize_(); j++)
 			{
 				square current = sq[i][j];
-
-				if (current.isFlagged())
-				{
-
+				if (stars[i][j]) {
 					g.setColor(Color.GREEN);
 					g.fillRect((i+1) * 20, (j+1) * 20, (i+1) * 20 + 20, (j+1) * 20 + 20);
-//					g.setColor(Color.BLACK);
-					
-//					g.drawLine((i+1) * 20, (j+1) * 20, (i+1) * 20 + 20, (j+1) * 20 + 20);
-//					g.drawLine((i+1) * 20, (j+1) * 20 + 20, (i+1) * 20 + 20, (j+1) * 20);
 				}
+				else {
+					if (current.isFlagged())
+					{
+	
+						g.setColor(Color.YELLOW);
+						g.fillRect((i+1) * 20, (j+1) * 20, (i+1) * 20 + 20, (j+1) * 20 + 20);
+					}
 					else
 					{
 						g.setColor(Color.LIGHT_GRAY);
 						g.fillRect((i+1) * 20, (j+1) * 20, (i+1) * 20 + 20, (j+1) * 20 + 20);
 					}
+				}
 
 			}
+			
 		}
-		for (int i = 0; i < b.getSize(); i++)
+		for (int i = 0; i < b.getSize_(); i++)
 		{
 			
 			g.setColor(Color.BLACK);
 			
-			g.drawLine((i+1) * 20, 0, (i+1) * 20, b.getSize() * 20 + 20);
-			g.drawLine(0,(i+1) * 20, b.getSize() * 20 + 20, (i+1) * 20);
+			g.drawLine((i+1) * 20, 0, (i+1) * 20, b.getSize_() * 20 + 20);
+			g.drawLine(0,(i+1) * 20, b.getSize_() * 20 + 20, (i+1) * 20);
 		}
 	}
 
