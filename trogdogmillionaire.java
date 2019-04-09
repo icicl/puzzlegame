@@ -3,7 +3,7 @@ import javax.swing.JFrame;
 
 public class trogdogmillionaire {
 	public static void main(String[] args){
-		board2 b = new board2(10,.05,.25);
+		board2 b = new board2(10,0.075,0.25);
 		b.rows_();
 		b.cols_();
 		//b.vals();

@@ -120,6 +120,35 @@ public class board2 extends JFrame{
 				q[i][j] = new square(Math.random() <= ch_x_ && stars_[i][j] && !stars[i][j]);
 			}
 		}
+		boolean keep=false;
+		for (int i=0;i<size;i++){
+			for(int j=0;j<size;j++){
+				if (stars[i][j]){
+			for (int ii=-1;ii<2;ii++){
+				for (int jj=-1;jj<2;jj++){
+					try{
+						keep = keep||q[i+ii][j+jj].isbad();
+					} catch(IndexOutOfBoundsException e){};
+				}
+			}
+			stars[i][j]=keep;}
+			}
+		}
+		stars_ = new boolean[size][size];
+		for (int i=0;i<size;i++){
+			for(int j=0;j<size;j++){
+				if (stars[i][j]){
+					for (int ii=-1;ii<2;ii++){
+						for (int jj=-1;jj<2;jj++){
+							try{
+								stars_[i+ii][j+jj] = true;
+							} catch(IndexOutOfBoundsException e){};
+						}
+					}
+				}
+			}
+		}
+
 		for (int i = 0;i<size;i++){
 			for (square s:q[i]) rows[i] += s.isbad() ? 1 : 0;
 		}
@@ -134,12 +163,23 @@ public class board2 extends JFrame{
 		d.repaint();
 	}
 	public void select(int x,int y) {
+		if (x==-1&&y==-1){
+			return;
+		}
+		if (x==-1){
+			for (int j=0;j<size;j++)q[j][y].mark_();
+			return;
+		}
+		if (y==-1){
+			for (int j=0;j<size;j++)q[x][j].mark_();
+			return;
+		}
 		q[x][y].flag();
 		if (won()) win();
 	}
 	public void mark(int x,int y){
 		q[x][y].mark();
-		q[x][y].unflag();
+//		q[x][y].unflag();
 	}
 	public int getSize_(){
 		return size;

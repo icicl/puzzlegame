@@ -9,6 +9,7 @@ public class square {
 		bad = b;
 		visible = false;
 		flagged= false;
+		marked=false;
 	}
 	public void click(){
 		visible = true;
@@ -29,7 +30,11 @@ public class square {
 		return marked;
 	}
 	public void mark(){
-		marked=!marked;
+		marked=!(marked||flagged);
+		if (marked)flagged=false;
+	}
+	public void mark_(){
+		marked=!flagged&&!marked;
 	}
 	public void unflag(){
 		flagged = false;
