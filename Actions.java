@@ -38,6 +38,13 @@ public class Actions implements ActionListener, MouseListener
 
 			b.select(x, y);
 		}
+		if (e.getButton() == 2)
+		{
+			int x = e.getX() / 20 - 1;
+			int y = e.getY() / 20 - 1;
+
+			b.unselect(x, y);
+		}
 
 		if (e.getButton() == 3)
 		{
@@ -73,7 +80,8 @@ public class Actions implements ActionListener, MouseListener
 		if (e.getButton()!=3)return;
 		for (int x = Math.min(x1, e.getX())/20-1;x<=Math.max(x1, e.getX())/20-1;x++){
 			for (int y = Math.min(y1, e.getY())/20-1;y<=Math.max(y1, e.getY())/20-1;y++){
-				b.mark(x, y);
+				try{b.mark(x, y);}
+				catch (ArrayIndexOutOfBoundsException e_){};
 			}
 		}
 		lock=false;

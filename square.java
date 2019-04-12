@@ -36,7 +36,13 @@ public class square {
 	public void mark_(){
 		marked=!flagged&&!marked;
 	}
+	public void mark__(){
+		marked=!flagged;
+	}
 	public void unflag(){
 		flagged = false;
+	}
+	public void unmark(){
+		marked=false;
 	}
 }

@@ -1,6 +1,8 @@
 package sickomode;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 import javax.swing.JButton;
@@ -8,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class board2 extends JFrame{
+	private boolean[][] no;
 	private int size;
 	private square[][] q;
 	private int[] rows;
@@ -45,6 +48,7 @@ public class board2 extends JFrame{
 		done = false;
 		size = sz;
 		chance = ch_s;
+		no = new boolean[size][size];
 //		stars = new boolean[size][size];
 //		stars_ = new boolean[size][size];
 		reset();
@@ -81,13 +85,27 @@ public class board2 extends JFrame{
 		add(d, BorderLayout.CENTER);
 		reset = new JButton("New Game");
 		clear = new JButton("Clear Marks");
-		//add(reset, BorderLayout.NORTH);
-		//add(clear, BorderLayout.SOUTH);
+		add(reset, BorderLayout.NORTH);
+		add(clear, BorderLayout.SOUTH);
 
-		reset.addActionListener(new Actions(this));
+		reset.addActionListener(new ActionListener()
+		{
+			  public void actionPerformed(ActionEvent e)
+			  {
+			    board2 b = new board2(size,ch_s_,ch_x_);
+			  }
+			});		
 		clear.addActionListener(new Actions(this));
-		setTitle("SAMPLE text");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setTitle("Dakota's Epic Game");
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	//	addWindowListener(new java.awt.event.WindowAdapter() {
+	//	    @Override
+	//	    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+	//	  
+	//	            System.exit(0);
+
+//		    }
+//		});		
 		setResizable(false);
 		pack();
 		setVisible(true);
@@ -124,6 +142,7 @@ public class board2 extends JFrame{
 		for (int i=0;i<size;i++){
 			for(int j=0;j<size;j++){
 				if (stars[i][j]){
+					keep=false;
 			for (int ii=-1;ii<2;ii++){
 				for (int jj=-1;jj<2;jj++){
 					try{
@@ -137,6 +156,7 @@ public class board2 extends JFrame{
 		stars_ = new boolean[size][size];
 		for (int i=0;i<size;i++){
 			for(int j=0;j<size;j++){
+			//	stars_[i][j]=false;
 				if (stars[i][j]){
 					for (int ii=-1;ii<2;ii++){
 						for (int jj=-1;jj<2;jj++){
@@ -154,31 +174,77 @@ public class board2 extends JFrame{
 		}
 		for (int i = 0;i<size;i++){
 			for (square s[]:q) cols[i] += s[i].isbad() ? 1 : 0;
-		}	
+		}
+		for (int i = 0;i<size;i++){
+			for (int j = 0;j<size;j++){
+				no[i][j]=(!stars_[i][j])||cols[j]==0||rows[i]==0;
+			}
+		}
 		d=new draw(this);
 	}
 	
+	public int[] currentRows(){
+		int[] r = new int[size];
+		for (int i = 0;i<size;i++){
+			for (square s:q[i]) r[i] += s.isFlagged() ? 1 : 0;
+		}
+		return r;
+	}
+	public int[] currentCols(){
+		int[] r = new int[size];
+		for (int i = 0;i<size;i++){
+			for (square s[]:q) r[i] += s[i].isFlagged() ? 1 : 0;
+		}
+		return r;
+	}
 	
 	public void refresh() {
 		d.repaint();
 	}
 	public void select(int x,int y) {
 		if (x==-1&&y==-1){
+			for (int i=0;i<size;i++){
+				for (int j=0;j<size;j++){
+					q[i][j].unflag();
+					q[i][j].unmark();
+				}
+			}
 			return;
 		}
 		if (x==-1){
-			for (int j=0;j<size;j++)q[j][y].mark_();
+			for (int j=0;j<size;j++)q[j][y].mark__();
 			return;
 		}
 		if (y==-1){
-			for (int j=0;j<size;j++)q[x][j].mark_();
+			for (int j=0;j<size;j++)q[x][j].mark__();
 			return;
 		}
-		q[x][y].flag();
+		if (!stars[x][y] && !no[x][y]) q[x][y].flag();
 		if (won()) win();
+	}
+	public void unselect(int x,int y) {
+		if (x==-1&&y==-1){
+			return;
+		}
+		if (x==-1){
+			for (int j=0;j<size;j++)q[j][y].unmark();
+			return;
+		}
+		if (y==-1){
+			for (int j=0;j<size;j++)q[x][j].unmark();
+			return;
+		}
 	}
 	public void mark(int x,int y){
 		q[x][y].mark();
+//		q[x][y].unflag();
+	}
+	public void mark_(int x,int y){
+		q[x][y].mark_();
+//		q[x][y].unflag();
+	}
+	public void mark__(int x,int y){
+		q[x][y].mark__();
 //		q[x][y].unflag();
 	}
 	public int getSize_(){
@@ -234,12 +300,19 @@ public class board2 extends JFrame{
 	public int[] getCols(){
 		return cols;
 	}
+	public boolean[][] getNo(){
+		return no;
+	}
 	public boolean[][] getStars(){
 		return stars;
+	}
+	public boolean[][] getStars_(){
+		return stars_;
 	}
 	private int[] col2;
 	private int[] row2;
 	private int temp;
+
 	public boolean won() {
 	//	col2=new int[size];row2=new int[size];
 		for (int i = 0;i<size;i++){
@@ -266,6 +339,33 @@ public class board2 extends JFrame{
 	//	if (!(Arrays.equals(cols,col2)&&Arrays.equals(rows,row2))){
 	//		return false;
 		//}
+/*		boolean bad;
+		bad=true;
+		for (int i =0;i<size;i++){
+			for (int j=0;j<size;j++){
+				if (stars[i][j]){
+					bad = true;
+					for (int ii=-1;ii<2;ii++){
+						for (int jj=-1;jj<2;jj++){
+							try{
+								bad = bad && !q[i+ii][j+jj].isFlagged();
+							} catch(IndexOutOfBoundsException e){};
+						}
+					}				}
+				if (bad){
+					System.out.println(i+j);
+					return false;
+				}
+			}
+		}
+		return true;*/
+/*		for (square[] ss:q) {
+			for (square s:ss) {
+				if (s.isbad() != s.isFlagged()) return false;
+			}
+		}
+		System.out.println("won");
+		return true;*/
 		for (int i =0;i<size;i++){
 			for (int j=0;j<size;j++){
 				if (q[i][j].isFlagged() && !stars_[i][j]){
@@ -274,14 +374,27 @@ public class board2 extends JFrame{
 				}
 			}
 		}
-		return true;
-/*		for (square[] ss:q) {
-			for (square s:ss) {
-				if (s.isbad() != s.isFlagged()) return false;
+		boolean bad;
+		bad=true;
+		for (int i =0;i<size;i++){
+			for (int j=0;j<size;j++){
+				if (stars[i][j]){
+					bad = true;
+					for (int ii=-1;ii<2;ii++){
+						for (int jj=-1;jj<2;jj++){
+							try{
+								bad = bad && !q[i+ii][j+jj].isFlagged();
+							} catch(IndexOutOfBoundsException e){};
+						}
+					}				
+				if (bad){
+					System.out.println(i+" "+j);
+					return false;
+				}}
 			}
 		}
-		System.out.println("won");
-		return true;*/
+
+		return true;
 	}
 	public void win() {
 		JOptionPane.showMessageDialog(null, "Congratulations! You won!");

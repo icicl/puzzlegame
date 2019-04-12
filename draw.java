@@ -17,7 +17,10 @@ public class draw extends JPanel{
 	private int[] rows;
 	private int[] cols;
 	private int size;
+	private boolean[][] no;
 	private boolean[][] stars;
+	private boolean[][] stars_;
+	private boolean markInvalid;
 	public draw(board2 b_)
 	{
 		b = b_;
@@ -26,6 +29,9 @@ public class draw extends JPanel{
 		cols = b_.getCols();
 		size = b_.getSize_();
 		stars = b_.getStars();
+		stars_ = b_.getStars_();
+		no = b_.getNo();
+		markInvalid = true;//change this
 		addMouseListener(new Actions(b));
 
 		setPreferredSize(new Dimension(b_.getSize_() * 20 +20, b_.getSize_() * 20+20));
@@ -35,12 +41,30 @@ public class draw extends JPanel{
 		paintComponent_(g);
 	}
 	private void paintHeaders(Graphics g){
+		g.setColor(Color.WHITE);
+		g.fillRect(0,0,20,20);
+		Color use;
+		Color lightRed = new Color(255,200,200);
+		Color lightGreen = new Color(200,255,200);
 		for (int i=0;i<size;i++){
-			paintNum(g,0,1+i,cols[i]);
-			paintNum(g,1+i,0,rows[i]);
+			if (b.currentCols()[i]>cols[i]) {
+				use=(lightRed);
+			} else if (b.currentCols()[i]==cols[i]){
+				use=(lightGreen);
+			} else use=(Color.WHITE);
+			paintNum(g,0,1+i,cols[i],use);
+			if (b.currentRows()[i]>rows[i]) {
+				use=(lightRed);
+			} else if (b.currentRows()[i]==rows[i]){
+				use=(lightGreen);
+			} else use=(Color.WHITE);
+			paintNum(g,1+i,0,rows[i],use);
 		}
 	}
-	private void paintNum(Graphics g,int i,int j,int num){
+	private void paintNum(Graphics g,int i,int j,int num,Color c){
+		g.setColor(c);
+		g.fillRect((i) * 20, (j) * 20, (i) * 20 + 20, (j) * 20 + 20);
+		g.setColor(Color.BLACK);
 		if (num == 1)
 		{
 			g.drawLine(i * 20 + 13, j * 20 + 5, i * 20 + 13, j * 20 + 9);	//3
@@ -142,6 +166,12 @@ public class draw extends JPanel{
 					g.setColor(Color.GREEN);
 					g.fillRect((i+1) * 20, (j+1) * 20, (i+1) * 20 + 20, (j+1) * 20 + 20);
 				}
+				else if (no[i][j] && markInvalid){
+					g.setColor(new Color(160,200,255));//color of no
+					g.fillRect((i+1) * 20, (j+1) * 20, (i+1) * 20 + 20, (j+1) * 20 + 20);
+
+				}
+	//			else if(b.getRows()[i]==0)
 				else {
 					if (current.isFlagged())
 					{
